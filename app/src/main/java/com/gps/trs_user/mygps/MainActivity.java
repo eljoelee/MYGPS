@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,7 +13,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -30,8 +30,10 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,6 +46,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
     private static final int REQUEST_CODE_LOCATION = 2000; //임의 정수
     private static final int REQUEST_CODE_GPS = 2001; //임의 정수
     private GoogleMap googleMap; //GoogleMapAPI
+    private ArrayList<LatLng> latLngArrayList = new ArrayList<>();
     LocationManager locationManager; //위치정보를 가져오는 클래스
     MapFragment mapFragment;
     boolean setGPS = false;
@@ -168,7 +171,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
 
                 mGoogleApiClient.reconnect();
                 //setMyLocationEnabled(true)
-                //My Location 버튼이 지도 오른쪽 상단 모서리에 나타납니다.
+                // My Location 버튼이 지도 오른쪽 상단 모서리에 나타납니다.
                 // 사용자가 버튼을 클릭했을 때 현재 위치를 알 경우,
                 // 카메라가 기기의 현재 위치를 지도의 중앙에 표시합니다.
                 // 기기가 정지해 있을 때는 위치가 지도 위에 작은 파란 점으로 나타나고,
@@ -204,7 +207,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
 
         //맵 이동시, 움직이는 애니메이션 효과 메소드
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
         googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
             @Override
@@ -237,7 +240,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
                 googleMap.setMyLocationEnabled(true);
             } else {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
         }else{
             buildGoogleApiClient();
@@ -262,8 +265,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
 
         //setInteval : 위치가 update되는 주기
         //setFastestInterval : 위치 획득 후 update되는 주기
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(3000);
+        mLocationRequest.setFastestInterval(3000);
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -291,7 +294,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
 
                 //지도상에서 보여주는 영역 이동
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
         }
     }
@@ -368,9 +371,16 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
         markerOptions.title("현재 위치");
         googleMap.addMarker(markerOptions);
 
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.RED);
+        polylineOptions.width(5);
+        latLngArrayList.add(latLng);
+        polylineOptions.addAll(latLngArrayList);
+        googleMap.addPolyline(polylineOptions);
+
         //지도상에서 보여주는 영역 이동
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
         //레벨 선택기 컨트롤을 활성화/비활성화하는 메소드
         //ex) 1 = 나라, 2 = 도시....
