@@ -371,11 +371,16 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
         markerOptions.title("현재 위치");
         googleMap.addMarker(markerOptions);
 
+        //이동경로를 표시하는 Polyline 추가
+        //Polyline을 생성하려면 먼저 PolylineOptions 객체를 생성
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.RED);
         polylineOptions.width(5);
         latLngArrayList.add(latLng);
         polylineOptions.addAll(latLngArrayList);
+
+        //지도에 폴리라인을 추가할 수 있습니다.
+        //addPolyline 메서드는 Polyline 객체를 반환하며, 나중에 이 객체를 사용하여 Polyline을 변경할 수 있습니다.
         googleMap.addPolyline(polylineOptions);
 
         //지도상에서 보여주는 영역 이동
